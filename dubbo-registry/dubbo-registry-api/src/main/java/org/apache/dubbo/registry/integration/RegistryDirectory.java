@@ -355,7 +355,7 @@ public class RegistryDirectory<T> extends DynamicDirectory<T> {
         providerUrl = providerUrl.addParameter(Constants.CHECK_KEY, String.valueOf(false)); // Do not check whether the connection is successful or not, always create Invoker!
 
         // The combination of directoryUrl and override is at the end of notify, which can't be handled here
-//        this.overrideDirectoryUrl = this.overrideDirectoryUrl.addParametersIfAbsent(providerUrl.getParameters()); // Merge the provider side parameters
+        this.overrideDirectoryUrl = this.overrideDirectoryUrl.addParametersIfAbsent(providerUrl.getParameters()); // Merge the provider side parameters
 
         if ((providerUrl.getPath() == null || providerUrl.getPath()
                 .length() == 0) && DUBBO_PROTOCOL.equals(providerUrl.getProtocol())) { // Compatible version 1.0
@@ -409,7 +409,7 @@ public class RegistryDirectory<T> extends DynamicDirectory<T> {
         if (localUrlInvokerMap != null) {
             for (Invoker<T> invoker : new ArrayList<>(localUrlInvokerMap.values())) {
                 try {
-                    invoker.destroy();
+                    invoker.destroyAll();
                 } catch (Throwable t) {
                     logger.warn("Failed to destroy service " + serviceKey + " to provider " + invoker.getUrl(), t);
                 }
@@ -439,7 +439,7 @@ public class RegistryDirectory<T> extends DynamicDirectory<T> {
                     Invoker<T> invoker = oldUrlInvokerMap.get(key);
                     if (invoker != null) {
                         try {
-                            invoker.destroy();
+                            invoker.destroyAll();
                             if (logger.isDebugEnabled()) {
                                 logger.debug("destroy invoker[" + invoker.getUrl() + "] success. ");
                             }
